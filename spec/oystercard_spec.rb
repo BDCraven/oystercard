@@ -2,7 +2,10 @@ require 'oystercard'
 
 describe Oystercard do
 
-  subject(:card) { described_class.new }
+  subject(:card)  { described_class.new }
+  let(:station)   {double(:station)}
+
+  it {is_expected.to respond_to(:entry_station)}
 
   describe '#new' do
 
@@ -36,12 +39,18 @@ describe Oystercard do
 
     it 'knows it is in journey when touched in' do
       card.top_up(Oystercard::MAXIMUM_BALANCE)
-      card.touch_in
+      card.touch_in(station)
       expect(card).to be_in_journey
     end
 
+    it 'remembers the entry station when touched in' do
+      card.top_up(Oystercard::MAXIMUM_BALANCE)
+      card.touch_in(station)
+      expect(card.entry_station).to eq station
+    end
+
     it 'does not allow touch in below a minimum balance' do
-      expect { card.touch_in }.to raise_error "Cannot touch in, balance less than #{Oystercard::MINIMUM_BALANCE}"
+      expect { card.touch_in(station) }.to raise_error "Cannot touch in, balance less than #{Oystercard::MINIMUM_BALANCE}"
     end
 
   end
@@ -50,12 +59,16 @@ describe Oystercard do
 
     before do
       card.top_up(Oystercard::MAXIMUM_BALANCE)
-      card.touch_in
+      card.touch_in(station)
     end
 
     it 'knows journey has ended' do
       card.touch_out
       expect(card).not_to be_in_journey
+    end
+
+    it 'forgets the entry station when touched out' do
+      expect { card.touch_out }.to change {card.entry_station}.to nil
     end
 
     it 'reduces balance by minimum balance' do
