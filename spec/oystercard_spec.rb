@@ -12,10 +12,6 @@ describe Oystercard do
 
   end
 
-  # before do
-  #  card.top_up(Oystercard::MAXIMUM_BALANCE)
-  # end
-
   describe "#top_up" do
 
     it "can top up the balance" do
@@ -27,16 +23,6 @@ describe Oystercard do
       card.top_up(maximum_balance)
       expect{ card.top_up 1 }.to raise_error "Maximum balance of #{maximum_balance} exceeded"
     end
-  end
-
-  describe '#deduct' do
-
-    it 'deducts an amount from the balance' do
-      maximum_balance = Oystercard::MAXIMUM_BALANCE
-      card.top_up(maximum_balance)
-      expect { card.deduct(3) }.to change { subject.balance }.by -3
-    end
-
   end
 
   describe '#in_journey?' do
@@ -62,19 +48,19 @@ describe Oystercard do
 
   describe '#touch_out' do
 
-    it 'knows journey has ended' do
+    before do
       card.top_up(Oystercard::MAXIMUM_BALANCE)
       card.touch_in
+    end
+
+    it 'knows journey has ended' do
       card.touch_out
       expect(card).not_to be_in_journey
     end
 
     it 'reduces balance by minimum balance' do
-      card.top_up(Oystercard::MAXIMUM_BALANCE)
-      card.touch_in
       expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
     end
-
 
   end
 
