@@ -3,6 +3,16 @@ oystercard = Oystercard.new
 p oystercard.balance
 p oystercard.top_up(20)
 p oystercard.deduct(4)
-p oystercard.touch_in
+p oystercard.deduct(16)
+
+begin
+  p oystercard.touch_in
+rescue => exception
+  puts exception.inspect
+end
+
+p oystercard.top_up(20)
+oystercard.touch_in
 p oystercard.in_journey?
-p oystercard.touch_out
+oystercard.touch_out
+p oystercard.in_journey?

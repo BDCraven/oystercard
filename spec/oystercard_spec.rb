@@ -49,9 +49,13 @@ describe Oystercard do
   describe '#touch_in' do
 
     it 'knows it is in journey when touched in' do
-
+      card.top_up(Oystercard::MAXIMUM_BALANCE)
       card.touch_in
       expect(card).to be_in_journey
+    end
+
+    it 'does not allow touch in below a minimum balance' do
+      expect { card.touch_in }.to raise_error "Cannot touch in, balance less than #{Oystercard::MINIMUM_BALANCE}"
     end
 
   end
@@ -59,6 +63,7 @@ describe Oystercard do
   describe '#touch_out' do
 
     it 'knows journey has ended' do
+      card.top_up(Oystercard::MAXIMUM_BALANCE)
       card.touch_in
       card.touch_out
       expect(card).not_to be_in_journey
