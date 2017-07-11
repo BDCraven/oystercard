@@ -68,6 +68,14 @@ describe Oystercard do
       card.touch_out
       expect(card).not_to be_in_journey
     end
+
+    it 'reduces balance by minimum balance' do
+      card.top_up(Oystercard::MAXIMUM_BALANCE)
+      card.touch_in
+      expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
+    end
+
+
   end
 
 end
